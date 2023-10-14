@@ -22,6 +22,11 @@ jobs:
               uses: actions/setup-node@v3
               with:
                     node-version: 17
+            - name:  sonarqube
+              uses: sonarsource/sonarqube-scan-action@master
+              env:
+                    SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+                    SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
             - name: cache the dependencies
               env:
                 cache-name: cache-node-modules
@@ -37,14 +42,14 @@ jobs:
               run: npm ci
             - name: Test
               run: npm test
-            - name: Login into ACR
-              uses: azure/docker-login@v1
-              with:
-                    login-server: ${{secrets.ACR_SERVER }}
-                    username: ${{secrets.ACR_USER_NAME}}
-                    password: ${{secrets.ACR_PASSWORD}}
-            - name: build image and pushing into ACR
-              run: |
-                    docker build -t ${{secrets.ACR_SERVER}}/npm-image:${{github.sha}} . 
-                    docker push  ${{secrets.ACR_SERVER}}/npm-image:${{github.sha}}  
-                    docker image ls   
+            #- name: Login into ACR
+            #  uses: azure/docker-login@v1
+            #  with:
+            #        login-server: ${{secrets.ACR_SERVER }}
+            #        username: ${{secrets.ACR_USER_NAME}}
+            #        password: ${{secrets.ACR_PASSWORD}}
+            #- name: build image and pushing into ACR
+            #  run: |
+            #        docker build -t ${{secrets.ACR_SERVER}}/npm-image:${{github.sha}} . 
+            #        docker push  ${{secrets.ACR_SERVER}}/npm-image:${{github.sha}}  
+            #        docker image ls   
